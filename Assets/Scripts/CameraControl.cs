@@ -1,26 +1,54 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
- // Reference to the player GameObject.
- public GameObject player;
+    public GameObject player;
 
- // The distance between the camera and the player.
- private Vector3 offset;
+    private Vector3 offset;
+    private Vector3 offsetNormalized;
 
- // Start is called before the first frame update.
- void Start()
+    [SerializeField]
+    private float ZoomSpeed;
+    [SerializeField]
+    private float ZoomMin, ZoomMax;
+
+
+    [SerializeField]
+    private float RotationSpeed;
+
+
+    void Start()
     {
- // Calculate the initial offset between the camera's position and the player's position.
         offset = transform.position - player.transform.position; 
+        offsetNormalized = offset.normalized;
     }
 
- // LateUpdate is called once per frame after all Update functions have been completed.
- void LateUpdate()
+    void LateUpdate()
     {
- // Maintain the same offset between the camera and player throughout the game.
         transform.position = player.transform.position + offset;  
+        
+        transform.LookAt(player.transform);
+    }
+
+    void OnZoom(InputValue movementValue)
+    {
+        float zoom = movementValue.Get<float>();
+
+        offset = offsetNormalized * Mathf.Clamp(offset.magnitude + ZoomSpeed * Mathf.Sign(zoom), ZoomMin, ZoomMax);
+    }
+
+    void OnRotation(InputValue movementValue)
+    {
+        float rotation = movementValue.Get<float>();
+
+        offsetNormalized = Quaternion.Euler(0, RotationSpeed * Mathf.Sign(rotation), 0) * offsetNormalized;
+
+        offset = offsetNormalized * offset.magnitude;
     }
 }
