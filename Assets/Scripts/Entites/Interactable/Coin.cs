@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class Coin : PlayerDetection
 {
+
+    public float speed = 10f;
+
+    private void FixedUpdate()
+    {
+        Transform tr = GetComponent<Transform>();
+        tr.Rotate(Time.fixedDeltaTime * speed, 0f, 0f);
+    }
+
     public override void OnPlayerEneter()
     {
         Debug.Log("Coin Collected");
