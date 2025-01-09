@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
  public GameObject player;
 
  // The distance between the camera and the player.
- private Vector3 offset;
+ private Vector3 _offset;
 
  // Start is called before the first frame update.
  void Start()
